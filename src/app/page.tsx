@@ -42,38 +42,20 @@ export default function Home() {
   };
 
   return (
-    <div className="flex h-screen bg-[#343541] text-white">
-      {/* Sidebar */}
-      <aside className="hidden md:flex flex-col w-64 bg-[#202123] border-r border-[#2a2b32] p-4">
-        <button className="w-full bg-[#343541] border border-[#444654] text-white rounded-lg py-2 mb-4 hover:bg-[#444654] transition">
-          + New Chat
-        </button>
-        <div className="flex-1 overflow-y-auto space-y-2">
-          {/* Placeholder for chat history */}
-          <div className="bg-[#343541] rounded-lg px-4 py-2 text-sm text-[#ececf1] opacity-70 cursor-pointer hover:bg-[#444654] transition">
-            Example Chat
-          </div>
-        </div>
-        <div className="mt-4 border-t border-[#2a2b32] pt-4 flex items-center gap-2">
-          <div className="w-8 h-8 rounded-full bg-[#444654]" />
-          <span className="text-sm text-[#ececf1]">User</span>
-        </div>
-      </aside>
-
-      {/* Main Area */}
-      <main className="flex-1 flex flex-col h-screen">
-        {/* Top Bar */}
-        <header className="flex items-center justify-between px-4 py-3 border-b border-[#2a2b32] bg-[#343541] sticky top-0 z-10">
-          <div className="text-lg font-semibold tracking-tight">ChatGPT</div>
-          <select className="bg-[#444654] text-white rounded px-3 py-1 text-sm border-none outline-none">
-            <option>GPT-4o</option>
-            <option>GPT-4</option>
-            <option>GPT-3.5</option>
-          </select>
-        </header>
-        {/* Chat Area */}
-        <div ref={chatRef} className="flex-1 overflow-y-auto px-2 md:px-0 py-6 bg-[#343541]">
-          <div className="max-w-2xl mx-auto space-y-4">
+    <div className="flex flex-col min-h-screen bg-[#343541] text-white">
+      {/* Top Bar */}
+      <header className="flex items-center justify-between px-4 py-3 border-b border-[#2a2b32] bg-[#343541] sticky top-0 z-10">
+        <div className="text-lg font-semibold tracking-tight">ChatGPT</div>
+        <select className="bg-[#444654] text-white rounded px-3 py-1 text-sm border-none outline-none">
+          <option>GPT-4o</option>
+          <option>GPT-4</option>
+          <option>GPT-3.5</option>
+        </select>
+      </header>
+      {/* Chat Area */}
+      <main className="flex-1 flex flex-col items-center justify-center">
+        <div ref={chatRef} className="w-full flex-1 flex flex-col items-center justify-center px-2 md:px-0 py-6">
+          <div className="w-full max-w-2xl space-y-4">
             {messages.length === 0 && (
               <div className="flex flex-col items-center justify-center h-[60vh] text-[#ececf1] opacity-80 select-none">
                 <h1 className="text-2xl md:text-3xl font-medium mb-4">What can I help you with today?</h1>
