@@ -45,7 +45,7 @@ export default function Home() {
     <div className="flex flex-col min-h-screen bg-[#343541] text-white">
       {/* Top Bar */}
       <header className="flex items-center justify-between px-4 py-3 border-b border-[#2a2b32] bg-[#343541] sticky top-0 z-10">
-        <div className="text-lg font-semibold tracking-tight">ChatGPT</div>
+        <div className="text-lg font-semibold tracking-tight">ThinkAI</div>
         <select className="bg-[#444654] text-white rounded px-3 py-1 text-sm border-none outline-none">
           <option>GPT-4o</option>
           <option>GPT-4</option>
@@ -94,7 +94,7 @@ export default function Home() {
               type="text"
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              placeholder="Message ChatGPT…"
+              placeholder="Message ThinkAI…"
               className="w-full bg-[#40414f] text-white rounded-2xl py-4 pl-5 pr-14 text-base border border-[#444654] focus:outline-none focus:ring-2 focus:ring-[#0fa47f] transition shadow-md"
               disabled={loading}
             />
