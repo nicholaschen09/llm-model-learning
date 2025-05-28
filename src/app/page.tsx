@@ -1,6 +1,5 @@
 "use client";
-import React from "react";
-import { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 
 interface Message {
   role: "user" | "assistant";
@@ -10,97 +9,118 @@ interface Message {
 export default function Home() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
+  const chatRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (chatRef.current) {
+      chatRef.current.scrollTop = chatRef.current.scrollHeight;
+    }
+  }, [messages]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!input.trim()) return;
-
-    // Add user message
-    const newMessages: Message[] = [...messages, { role: "user" as const, content: input }];
+    const newMessages = [...messages, { role: "user" as const, content: input }];
     setMessages(newMessages);
     setInput("");
-
-    // Simulate assistant response
     setTimeout(() => {
       setMessages([
         ...newMessages,
-        {
-          role: "assistant" as const,
-          content: "This is a simulated response. In a real application, this would be connected to an AI model.",
-        },
+        { role: "assistant" as const, content: "This is a simulated response." },
       ]);
-    }, 1000);
+    }, 800);
   };
 
   return (
-    <div className="flex h-screen bg-gray-50 dark:bg-gray-900">
+    <div className="flex h-screen bg-[#343541] text-white">
       {/* Sidebar */}
-      <div className="w-64 bg-gray-800 text-white p-4 hidden md:block">
-        <button className="w-full bg-white/10 hover:bg-white/20 rounded-lg p-3 text-sm mb-4">
+      <aside className="hidden md:flex flex-col w-64 bg-[#202123] border-r border-[#2a2b32] p-4">
+        <button className="w-full bg-[#343541] border border-[#444654] text-white rounded-lg py-2 mb-4 hover:bg-[#444654] transition">
           + New Chat
         </button>
-        <div className="space-y-2">
-          <div className="text-sm text-gray-400">Recent Chats</div>
-          {/* Add recent chats here */}
+        <div className="flex-1 overflow-y-auto space-y-2">
+          {/* Placeholder for chat history */}
+          <div className="bg-[#343541] rounded-lg px-4 py-2 text-sm text-[#ececf1] opacity-70 cursor-pointer hover:bg-[#444654] transition">
+            Example Chat
+          </div>
         </div>
-      </div>
+        <div className="mt-4 border-t border-[#2a2b32] pt-4 flex items-center gap-2">
+          <div className="w-8 h-8 rounded-full bg-[#444654]" />
+          <span className="text-sm text-[#ececf1]">User</span>
+        </div>
+      </aside>
 
-      {/* Main Chat Area */}
-      <div className="flex-1 flex flex-col h-screen">
-        {/* Messages */}
-        <div className="flex-1 overflow-y-auto p-4 space-y-4">
-          {messages.map((message, index) => (
-            <div
-              key={index}
-              className={`flex ${message.role === "user" ? "justify-end" : "justify-start"
-                }`}
-            >
-              <div
-                className={`max-w-[80%] rounded-lg p-4 ${message.role === "user"
-                  ? "bg-blue-500 text-white"
-                  : "bg-gray-200 dark:bg-gray-700"
-                  }`}
-              >
-                {message.content}
+      {/* Main Area */}
+      <main className="flex-1 flex flex-col h-screen">
+        {/* Top Bar */}
+        <header className="flex items-center justify-between px-4 py-3 border-b border-[#2a2b32] bg-[#343541] sticky top-0 z-10">
+          <div className="text-lg font-semibold tracking-tight">ChatGPT</div>
+          <select className="bg-[#444654] text-white rounded px-3 py-1 text-sm border-none outline-none">
+            <option>GPT-4o</option>
+            <option>GPT-4</option>
+            <option>GPT-3.5</option>
+          </select>
+        </header>
+        {/* Chat Area */}
+        <div ref={chatRef} className="flex-1 overflow-y-auto px-2 md:px-0 py-6 bg-[#343541]">
+          <div className="max-w-2xl mx-auto space-y-4">
+            {messages.length === 0 && (
+              <div className="flex flex-col items-center justify-center h-[60vh] text-[#ececf1] opacity-80 select-none">
+                <h1 className="text-2xl md:text-3xl font-medium mb-4">What can I help you with today?</h1>
+                <p className="text-base opacity-70">Start a conversation or pick a recent chat.</p>
               </div>
-            </div>
-          ))}
-        </div>
-
-        {/* Input Area */}
-        <div className="border-t border-gray-200 dark:border-gray-700 p-4">
-          <form onSubmit={handleSubmit} className="max-w-3xl mx-auto">
-            <div className="relative">
-              <input
-                type="text"
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                placeholder="Type your message..."
-                className="w-full p-4 pr-12 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-              <button
-                type="submit"
-                className="absolute right-2 top-1/2 -translate-y-1/2 p-2 text-blue-500 hover:text-blue-600"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth={1.5}
-                  stroke="currentColor"
-                  className="w-6 h-6"
+            )}
+            {messages.map((msg, idx) => (
+              <div key={idx} className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
+                <div
+                  className={`rounded-xl px-5 py-3 max-w-[80%] whitespace-pre-line shadow-sm text-base ${msg.role === "user"
+                      ? "bg-[#0fa47f] text-white"
+                      : "bg-[#444654] text-[#ececf1]"
+                    }`}
                 >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5"
-                  />
-                </svg>
-              </button>
-            </div>
-          </form>
+                  {msg.content}
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
-      </div>
+        {/* Input Area */}
+        <form
+          onSubmit={handleSubmit}
+          className="w-full bg-[#343541] border-t border-[#2a2b32] px-2 md:px-0 py-6 flex justify-center sticky bottom-0 z-10"
+          autoComplete="off"
+        >
+          <div className="relative w-full max-w-2xl">
+            <input
+              type="text"
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              placeholder="Message ChatGPT…"
+              className="w-full bg-[#40414f] text-white rounded-2xl py-4 pl-5 pr-14 text-base border border-[#444654] focus:outline-none focus:ring-2 focus:ring-[#0fa47f] transition shadow-md"
+            />
+            <button
+              type="submit"
+              className="absolute right-3 top-1/2 -translate-y-1/2 p-2 rounded-full bg-[#0fa47f] hover:bg-[#10b981] transition-colors"
+              aria-label="Send"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={2}
+                stroke="currentColor"
+                className="w-5 h-5 text-white"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M5 12h14M12 5l7 7-7 7"
+                />
+              </svg>
+            </button>
+          </div>
+        </form>
+      </main>
     </div>
   );
 }
