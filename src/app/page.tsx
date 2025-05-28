@@ -9,6 +9,7 @@ interface Message {
 export default function Home() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
+  const [loading, setLoading] = useState(false);
   const chatRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -17,18 +18,27 @@ export default function Home() {
     }
   }, [messages]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!input.trim()) return;
     const newMessages = [...messages, { role: "user" as const, content: input }];
     setMessages(newMessages);
     setInput("");
-    setTimeout(() => {
-      setMessages([
-        ...newMessages,
-        { role: "assistant" as const, content: "This is a simulated response." },
-      ]);
-    }, 800);
+    setLoading(true);
+    try {
+      const res = await fetch("/api/gemini", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ query: input }),
+      });
+      const data = await res.json();
+      const geminiReply = data.response || data.error || "No response from Gemini.";
+      setMessages([...newMessages, { role: "assistant", content: geminiReply }]);
+    } catch (err) {
+      setMessages([...newMessages, { role: "assistant", content: "Error contacting Gemini API." }]);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -74,14 +84,21 @@ export default function Home() {
               <div key={idx} className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
                 <div
                   className={`rounded-xl px-5 py-3 max-w-[80%] whitespace-pre-line shadow-sm text-base ${msg.role === "user"
-                      ? "bg-[#0fa47f] text-white"
-                      : "bg-[#444654] text-[#ececf1]"
-                    }`}
+                    ? "bg-[#0fa47f] text-white"
+                    : "bg-[#444654] text-[#ececf1]"
+                  }`}
                 >
                   {msg.content}
                 </div>
               </div>
             ))}
+            {loading && (
+              <div className="flex justify-start">
+                <div className="rounded-xl px-5 py-3 max-w-[80%] shadow-sm text-base bg-[#444654] text-[#ececf1] opacity-70 animate-pulse">
+                  Gemini is typing…
+                </div>
+              </div>
+            )}
           </div>
         </div>
         {/* Input Area */}
@@ -97,11 +114,13 @@ export default function Home() {
               onChange={(e) => setInput(e.target.value)}
               placeholder="Message ChatGPT…"
               className="w-full bg-[#40414f] text-white rounded-2xl py-4 pl-5 pr-14 text-base border border-[#444654] focus:outline-none focus:ring-2 focus:ring-[#0fa47f] transition shadow-md"
+              disabled={loading}
             />
             <button
               type="submit"
-              className="absolute right-3 top-1/2 -translate-y-1/2 p-2 rounded-full bg-[#0fa47f] hover:bg-[#10b981] transition-colors"
+              className="absolute right-3 top-1/2 -translate-y-1/2 p-2 rounded-full bg-[#0fa47f] hover:bg-[#10b981] transition-colors disabled:opacity-50"
               aria-label="Send"
+              disabled={loading || !input.trim()}
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
