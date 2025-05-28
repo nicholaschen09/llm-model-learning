@@ -86,7 +86,7 @@ export default function Home() {
                   className={`rounded-xl px-5 py-3 max-w-[80%] whitespace-pre-line shadow-sm text-base ${msg.role === "user"
                     ? "bg-[#0fa47f] text-white"
                     : "bg-[#444654] text-[#ececf1]"
-                  }`}
+                    }`}
                 >
                   {msg.content}
                 </div>
