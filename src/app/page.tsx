@@ -46,11 +46,6 @@ export default function Home() {
       {/* Top Bar */}
       <header className="flex items-center justify-between px-4 py-3 border-b border-[#2a2b32] bg-[#343541] sticky top-0 z-10">
         <div className="text-lg font-semibold tracking-tight">ThinkAI</div>
-        <select className="bg-[#444654] text-white rounded px-3 py-1 text-sm border-none outline-none">
-          <option>GPT-4o</option>
-          <option>GPT-4</option>
-          <option>GPT-3.5</option>
-        </select>
       </header>
       {/* Chat Area */}
       <main className="flex-1 flex flex-col items-center justify-center">
