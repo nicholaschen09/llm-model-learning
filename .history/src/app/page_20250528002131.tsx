@@ -1,4 +1,3 @@
-"use client";
 import React from "react";
 import { useState } from "react";
 
@@ -57,8 +56,8 @@ export default function Home() {
             >
               <div
                 className={`max-w-[80%] rounded-lg p-4 ${message.role === "user"
-                  ? "bg-blue-500 text-white"
-                  : "bg-gray-200 dark:bg-gray-700"
+                    ? "bg-blue-500 text-white"
+                    : "bg-gray-200 dark:bg-gray-700"
                   }`}
               >
                 {message.content}

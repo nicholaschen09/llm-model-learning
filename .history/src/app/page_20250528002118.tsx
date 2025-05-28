@@ -1,4 +1,3 @@
-"use client";
 import React from "react";
 import { useState } from "react";
 
@@ -16,7 +15,7 @@ export default function Home() {
     if (!input.trim()) return;
 
     // Add user message
-    const newMessages: Message[] = [...messages, { role: "user" as const, content: input }];
+    const newMessages = [...messages, { role: "user", content: input }];
     setMessages(newMessages);
     setInput("");
 
@@ -25,7 +24,7 @@ export default function Home() {
       setMessages([
         ...newMessages,
         {
-          role: "assistant" as const,
+          role: "assistant",
           content: "This is a simulated response. In a real application, this would be connected to an AI model.",
         },
       ]);
@@ -57,8 +56,8 @@ export default function Home() {
             >
               <div
                 className={`max-w-[80%] rounded-lg p-4 ${message.role === "user"
-                  ? "bg-blue-500 text-white"
-                  : "bg-gray-200 dark:bg-gray-700"
+                    ? "bg-blue-500 text-white"
+                    : "bg-gray-200 dark:bg-gray-700"
                   }`}
               >
                 {message.content}
